@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Advanced Calculator</title>
     <style>
+      /* Basic styling for the body */
       body {
         font-family: Arial, sans-serif;
         display: flex;
@@ -15,6 +16,7 @@
         margin: 0;
         padding-top: 20px;
       }
+      /* Styling for the calculator container */
       .container {
         width: 400px;
         background: #9cd594;
@@ -23,6 +25,7 @@
         border-radius: 10px;
         margin-right: 20px;
       }
+      /* Styling for the display input */
       .display {
         width: 100%;
         height: 60px;
@@ -36,11 +39,13 @@
         margin-bottom: 10px;
         border: 1px solid #ccc;
       }
+      /* Styling for the grid of buttons */
       .grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 10px;
       }
+      /* Styling for each button */
       .grid button {
         width: 100%;
         height: 60px;
@@ -61,6 +66,7 @@
       .grid button:active {
         background: #e0dfe4;
       }
+      /* Styling for the history container */
       .history-container {
         width: 300px;
         background: #fff;
@@ -68,6 +74,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
       }
+      /* Styling for the history section */
       .history {
         max-height: 400px;
         overflow-y: auto;
@@ -99,7 +106,9 @@
   </head>
   <body>
     <div class="container">
+      <!-- Display input for the calculator -->
       <input id="display" class="display" type="text" readonly />
+      <!-- Grid of calculator buttons -->
       <div class="grid">
         <button onclick="clearDisplay()">C</button>
         <button onclick="appendToDisplay('/')">/</button>
@@ -122,6 +131,7 @@
         <button onclick="appendTrigFunction('sin')">sin</button>
         <button onclick="appendTrigFunction('cos')">cos</button>
         <button onclick="appendTrigFunction('tan')">tan</button>
+        <button onclick="navigateToSolveEquation()">Solve Equation</button>
         <button onclick="calculate()">=</button>
       </div>
     </div>
@@ -132,6 +142,7 @@
       </div>
     </div>
     <script>
+      // Load history from localStorage when the page loads
       window.onload = function () {
         const history = document.getElementById("history");
         const savedHistory = localStorage.getItem("calculationHistory");
@@ -140,19 +151,23 @@
         }
       };
 
+      // Append value to the display
       function appendToDisplay(value) {
         document.getElementById("display").value += value;
       }
 
+      // Append trigonometric function to the display
       function appendTrigFunction(func) {
         const display = document.getElementById("display");
         display.value += `${func}(`;
       }
 
+      // Clear the display
       function clearDisplay() {
         document.getElementById("display").value = "";
       }
 
+      // Calculate the expression in the display
       function calculate() {
         const display = document.getElementById("display");
         const history = document.getElementById("history");
@@ -179,13 +194,22 @@
           history.innerHTML += newEntry;
           display.value = result;
 
-          // Save calculation history
+          // Save the new entry to localStorage
           localStorage.setItem("calculationHistory", history.innerHTML);
         } catch (error) {
           display.value = "Error";
         }
       }
 
+      // Navigate to the solve-equation.html page with the current equation
+      function navigateToSolveEquation() {
+        const display = document.getElementById("display").value;
+        window.location.href = `solve-equation.html?equation=${encodeURIComponent(
+          display
+        )}`;
+      }
+
+      // Clear the calculation history
       function clearHistory() {
         const history = document.getElementById("history");
         history.innerHTML =

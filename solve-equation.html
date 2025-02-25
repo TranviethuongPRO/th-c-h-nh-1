@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giải phương trình</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 500px;
+        margin: auto;
+        background: #19af7d;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+      input {
+        margin: 5px;
+        padding: 10px;
+        width: 100px;
+        border: 1px solid #6b419a;
+        border-radius: 5px;
+      }
+      button {
+        padding: 10px 20px;
+        margin-top: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      select {
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .result {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Giải phương trình</h2>
+      <label>Chọn bậc phương trình:</label>
+      <select id="degree" onchange="updateInputs()">
+        <option value="1">Bậc 1</option>
+        <option value="2">Bậc 2</option>
+        <option value="3">Bậc 3</option>
+      </select>
+      <div id="inputs"></div>
+      <button onclick="solveEquation()">Giải</button>
+      <h3>Kết quả:</h3>
+      <p id="result" class="result"></p>
+    </div>
+
+    <script>
+      function updateInputs() {
+        let degree = document.getElementById("degree").value;
+        let inputDiv = document.getElementById("inputs");
+        let html = "";
+        if (degree == 1) {
+          html =
+            'ax + b = 0<br> <input id="a" type="number"> x + <input id="b" type="number"> = 0';
+        } else if (degree == 2) {
+          html =
+            'ax² + bx + c = 0<br> <input id="a" type="number"> x² + <input id="b" type="number"> x + <input id="c" type="number"> = 0';
+        } else {
+          html =
+            'ax³ + bx² + cx + d = 0<br> <input id="a" type="number"> x³ + <input id="b" type="number"> x² + <input id="c" type="number"> x + <input id="d" type="number"> = 0';
+        }
+        inputDiv.innerHTML = html;
+      }
+
+      function solveEquation() {
+        let degree = document.getElementById("degree").value;
+        let resultDiv = document.getElementById("result");
+        let a = parseFloat(document.getElementById("a").value);
+        let b = parseFloat(document.getElementById("b").value);
+        let c =
+          degree >= 2 ? parseFloat(document.getElementById("c").value) : 0;
+        let d =
+          degree == 3 ? parseFloat(document.getElementById("d").value) : 0;
+        let result = "";
+
+        if (degree == 1) {
+          if (a === 0) result = b === 0 ? "Vô số nghiệm" : "Vô nghiệm";
+          else result = "Nghiệm: x = " + -b / a;
+        } else if (degree == 2) {
+          let delta = b * b - 4 * a * c;
+          if (delta < 0) result = "Phương trình vô nghiệm";
+          else if (delta == 0) result = "Nghiệm kép: x = " + -b / (2 * a);
+          else {
+            let x1 = (-b + Math.sqrt(delta)) / (2 * a);
+            let x2 = (-b - Math.sqrt(delta)) / (2 * a);
+            result = "Hai nghiệm: x1 = " + x1 + ", x2 = " + x2;
+          }
+        } else {
+          let solutions = solveCubic(a, b, c, d);
+          result = "Nghiệm: " + solutions.join(", ");
+        }
+
+        resultDiv.innerHTML = result;
+      }
+
+      function solveCubic(a, b, c, d) {
+        let f = ((3 * c) / a - (b * b) / (a * a)) / 3;
+        let g =
+          ((2 * b * b * b) / (a * a * a) -
+            (9 * b * c) / (a * a) +
+            (27 * d) / a) /
+          27;
+        let h = (g * g) / 4 + (f * f * f) / 27;
+
+        if (h > 0) {
+          let R = -(g / 2) + Math.sqrt(h);
+          let S = Math.cbrt(R);
+          let T = -(g / 2) - Math.sqrt(h);
+          let U = Math.cbrt(T);
+          return [S + U - b / (3 * a)];
+        } else {
+          let i = Math.sqrt((g * g) / 4 - h);
+          let j = Math.cbrt(i);
+          let k = Math.acos(-(g / (2 * i)));
+          let L = -j;
+          let M = Math.cos(k / 3);
+          let N = Math.sqrt(3) * Math.sin(k / 3);
+          let P = -(b / (3 * a));
+          return [2 * j * M + P, L * (M + N) + P, L * (M - N) + P];
+        }
+      }
+
+      updateInputs();
+    </script>
+  </body>
+</html>
